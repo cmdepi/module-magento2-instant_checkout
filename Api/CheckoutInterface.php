@@ -34,7 +34,7 @@ interface CheckoutInterface
 
     /**
      *
-     * Process
+     * Execute checkout
      *
      * @param string                 $paymentMethod
      * @param Product                $product
@@ -48,7 +48,7 @@ interface CheckoutInterface
      * @throws Exception
      *
      */
-    public function process(
+    public function execute(
         $paymentMethod,
         $product,
         $customer                      = null,

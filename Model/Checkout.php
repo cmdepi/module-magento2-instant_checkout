@@ -228,7 +228,7 @@ class Checkout extends Onepage implements CheckoutInterface
 
     /**
      *
-     * Process
+     * Execute checkout
      *
      * @param string                 $paymentMethod
      * @param Product                $product
@@ -242,7 +242,7 @@ class Checkout extends Onepage implements CheckoutInterface
      * @throws Exception
      *
      */
-    public function process(
+    public function execute(
         $paymentMethod,
         $product,
         $customer                      = null,
