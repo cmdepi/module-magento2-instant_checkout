@@ -16,6 +16,7 @@ namespace Bina\InstantCheckout\Model;
 
 use Exception;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\DataObject;
 use Magento\Framework\DataObject\Copy;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
@@ -41,6 +42,7 @@ use Magento\Customer\Model\Metadata\FormFactory as CustomerMetadataFormFactory;
 use Magento\Payment\Helper\Data    as PaymentHelper;
 use Magento\Checkout\Helper\Data   as CheckoutHelper;
 use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Checkout\Model\Cart;
 use Magento\Checkout\Model\Type\Onepage;
 use Magento\Quote\Api\Data\CartInterfaceFactory;
 use Magento\Quote\Api\Data\PaymentInterface;
@@ -490,9 +492,13 @@ class Checkout extends Onepage implements CheckoutInterface
         /**
          *
          * @note Add product to quote
+         * @note It is necessary to parse product request info as data object. Magento uses the deprecated cart model to manage the request info and add the product to the quote. This cart deprecated model filters data from the request, but it seems that it is not necessary to add the product correctly
+         *
+         * @see Cart::addProduct()
+         * @see Cart::_getProductRequest()
          *
          */
-        $this->getQuote()->addProduct($product, $requestInfo);
+        $this->getQuote()->addProduct($product, new DataObject($requestInfo));
         $this->getQuote()->collectTotals();
         $this->quoteRepository->save($this->getQuote());
     }
