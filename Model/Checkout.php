@@ -48,6 +48,7 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\TotalsCollector;
+use Magento\Payment\Model\Method\Free;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Bina\InstantCheckout\Api\CheckoutInterface;
@@ -301,9 +302,10 @@ class Checkout extends Onepage implements CheckoutInterface
             /**
              *
              * @note Check if order is placeable
+             * @note If it is a free quote then place order
              *
              */
-            if ($isPlaceable) {
+            if ($isPlaceable || $this->_isFreeQuote()) {
                 /**
                  *
                  * @note Save order
@@ -508,6 +510,20 @@ class Checkout extends Onepage implements CheckoutInterface
     {
         /**
          *
+         * @note Check if quote is free
+         *
+         */
+        if ($this->_isFreeQuote()) {
+            /**
+             *
+             * @note If it is a free quote then use free payment method
+             *
+             */
+            $paymentMethod = Free::PAYMENT_METHOD_FREE_CODE;
+        }
+
+        /**
+         *
          * @note Add payment method
          *
          */
@@ -550,5 +566,30 @@ class Checkout extends Onepage implements CheckoutInterface
          *
          */
         $this->quoteRepository->save($this->getQuote());
+    }
+
+    /**
+     *
+     * Validate if quote is free
+     *
+     * @return bool
+     *
+     */
+    protected function _isFreeQuote()
+    {
+        /**
+         *
+         * @note Get free payment method
+         *
+         */
+        $method = $this->_paymentHelper->getMethodInstance(Free::PAYMENT_METHOD_FREE_CODE);
+
+        /**
+         *
+         * @note Check if free method is available
+         * @note If it is available then it is a free quote
+         *
+         */
+        return $method->isAvailable($this->getQuote());
     }
 }
