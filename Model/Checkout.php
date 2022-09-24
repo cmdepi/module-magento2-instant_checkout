@@ -491,6 +491,20 @@ class Checkout extends Onepage implements CheckoutInterface
     {
         /**
          *
+         * @note Check request info
+         *
+         */
+        if (is_null($requestInfo)) {
+            /**
+             *
+             * @note Convert to array (needed to create the data object used to add the product to the quote)
+             *
+             */
+            $requestInfo = [];
+        }
+
+        /**
+         *
          * @note Add product to quote
          * @note It is necessary to parse product request info as data object. Magento uses the deprecated cart model to manage the request info and add the product to the quote. This cart deprecated model filters data from the request, but it seems that it is not necessary to add the product correctly
          *
