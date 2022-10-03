@@ -486,6 +486,8 @@ class Checkout extends Onepage implements CheckoutInterface
      *
      * @return void
      *
+     * @throws LocalizedException
+     *
      */
     protected function _addProduct($product, $requestInfo = null)
     {
@@ -512,7 +514,32 @@ class Checkout extends Onepage implements CheckoutInterface
          * @see Cart::_getProductRequest()
          *
          */
-        $this->getQuote()->addProduct($product, new DataObject($requestInfo));
+        $result = $this->getQuote()->addProduct($product, new DataObject($requestInfo));
+
+        /**
+         *
+         * @note Check result
+         * @note If result is string then there was an error adding the product
+         * @note For some reason, Magento decided to return a string (error message) instead of throwing an exception when an error happened
+         *
+         * @see Quote::addProduct()
+         * @see Cart::addProduct()
+         *
+         */
+        if (is_string($result)) {
+            /**
+             *
+             * @note Send error message
+             *
+             */
+            throw new LocalizedException(__($result));
+        }
+
+        /**
+         *
+         * @note Refresh quote
+         *
+         */
         $this->getQuote()->collectTotals();
         $this->quoteRepository->save($this->getQuote());
     }
