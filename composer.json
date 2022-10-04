@@ -2,7 +2,7 @@
     "name": "bina/module-instant-checkout",
     "description": "Instant checkout",
     "type": "magento2-module",
-    "version": "2.1.2",
+    "version": "2.2.2",
     "homepage": "https://www.binacommerce.com",
     "authors": [
         {
